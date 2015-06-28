@@ -9,4 +9,6 @@ import java.util.List;
  */
 public interface InvoiceClient {
     List<Invoice> findAll();
+
+    Invoice create(Invoice invoice);
 }

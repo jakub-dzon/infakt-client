@@ -34,9 +34,11 @@ public class JsonHttpInvoiceClientTest {
     @Mock
     private RestTemplate restTemplate;
 
+    private String baseUrl = "http://base.url";
+
     @Before
     public void setUp() throws Exception {
-        this.invoiceClient = new JsonHttpInvoiceClient(restTemplate);
+        this.invoiceClient = new JsonHttpInvoiceClient(restTemplate, baseUrl);
     }
 
     @Test
@@ -50,7 +52,7 @@ public class JsonHttpInvoiceClientTest {
         InfaktInvoiceResponse invoiceResponse = buildInfaktResponse(entities, metaInfo);
         ResponseEntity<InfaktInvoiceResponse> responseEntity = new ResponseEntity<>(invoiceResponse, HttpStatus.OK);
 
-        when(restTemplate.getForEntity("/invoices.json", InfaktInvoiceResponse.class)).thenReturn(responseEntity);
+        when(restTemplate.getForEntity(baseUrl + "/invoices.json", InfaktInvoiceResponse.class)).thenReturn(responseEntity);
 
         // When
         List<Invoice> invoices = invoiceClient.findAll();
