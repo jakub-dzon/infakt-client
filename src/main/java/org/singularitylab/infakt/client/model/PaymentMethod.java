@@ -1,10 +1,10 @@
 package org.singularitylab.infakt.client.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 /**
- *
- *
  * @author Jakub Dzon
- *
  */
 public enum PaymentMethod {
     TRANSFER,
@@ -20,8 +20,15 @@ public enum PaymentMethod {
     PAYU,
     OTHER;
 
+    @JsonValue
     @Override
     public String toString() {
         return name().toLowerCase();
     }
+
+    @JsonCreator
+    public static PaymentMethod forValue(String value) {
+        return PaymentMethod.valueOf(value.toUpperCase());
+    }
+
 }
