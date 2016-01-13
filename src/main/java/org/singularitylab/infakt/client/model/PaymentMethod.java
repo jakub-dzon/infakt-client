@@ -28,6 +28,9 @@ public enum PaymentMethod {
 
     @JsonCreator
     public static PaymentMethod forValue(String value) {
+        if (value == null || value.isEmpty()) {
+            return TRANSFER;
+        }
         return PaymentMethod.valueOf(value.toUpperCase());
     }
 

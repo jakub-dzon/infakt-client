@@ -19,6 +19,9 @@ public enum InvoiceKind {
 
     @JsonCreator
     public static InvoiceKind forValue(String value) {
+        if (value == null || value.isEmpty()) {
+            return VAT;
+        }
         return InvoiceKind.valueOf(value.toUpperCase());
     }
 

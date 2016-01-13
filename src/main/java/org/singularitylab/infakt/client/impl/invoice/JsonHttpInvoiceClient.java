@@ -15,7 +15,6 @@ import java.util.List;
 @Component
 class JsonHttpInvoiceClient implements InvoiceClient {
 
-
     private final RestTemplate restTemplate;
 
     private final String baseUrl;
@@ -28,13 +27,16 @@ class JsonHttpInvoiceClient implements InvoiceClient {
 
     @Override
     public List<Invoice> findAll() {
-        ResponseEntity<InfaktInvoiceResponse> responseEntity = restTemplate.getForEntity(baseUrl + "/invoices.json", InfaktInvoiceResponse.class);
+        ResponseEntity<InfaktInvoiceResponse> responseEntity = restTemplate.getForEntity(baseUrl + "/invoices.json",
+                InfaktInvoiceResponse.class);
         return responseEntity.getBody().getEntities();
     }
 
     @Override
     public Invoice create(Invoice invoice) {
-        ResponseEntity<Invoice> result = restTemplate.postForEntity(baseUrl + "/invoices.json", invoice, Invoice.class);
+        ResponseEntity<Invoice> result = restTemplate.postForEntity(baseUrl + "/invoices.json", invoice, Invoice
+                .class);
+
         return result.getBody();
     }
 }

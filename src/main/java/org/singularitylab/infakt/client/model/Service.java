@@ -7,6 +7,81 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class Service {
 
+    public static class Builder {
+
+        private int grossPrice;
+        private String name;
+        private String taxSymbol;
+        private String unit;
+        private int quantity;
+        private int unitNetPrice;
+        private int netPrice;
+        private int taxPrice;
+        private String symbol;
+
+        private Builder() {
+        }
+
+        public Builder withGrossPrice(int grossPrice) {
+            this.grossPrice = grossPrice;
+            return this;
+        }
+
+        public Builder withName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder withTaxSymbol(String taxSymbol) {
+            this.taxSymbol = taxSymbol;
+            return this;
+        }
+
+        public Builder withUnit(String unit) {
+            this.unit = unit;
+            return this;
+        }
+
+        public Builder withQuantity(int quantity) {
+            this.quantity = quantity;
+            return this;
+        }
+
+        public Builder withUnitNetPrice(int unitNetPrice) {
+            this.unitNetPrice = unitNetPrice;
+            return this;
+        }
+
+        public Builder withNetPrice(int netPrice) {
+            this.netPrice = netPrice;
+            return this;
+        }
+
+        public Builder withTaxPrice(int taxPrice) {
+            this.taxPrice = taxPrice;
+            return this;
+        }
+
+        public Builder withSymbol(String symbol) {
+            this.symbol = symbol;
+            return this;
+        }
+
+        public Service build() {
+            Service service = new Service();
+            service.setGrossPrice(grossPrice);
+            service.setName(name);
+            service.setTaxSymbol(taxSymbol);
+            service.setUnit(unit);
+            service.setQuantity(quantity);
+            service.setUnitNetPrice(unitNetPrice);
+            service.setNetPrice(netPrice);
+            service.setTaxPrice(taxPrice);
+            service.setSymbol(symbol);
+            return service;
+        }
+    }
+
     private String name;
 
     @JsonProperty("tax_symbol")
@@ -116,5 +191,9 @@ public class Service {
         sb.append(", symbol='").append(symbol).append('\'');
         sb.append('}');
         return sb.toString();
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 }

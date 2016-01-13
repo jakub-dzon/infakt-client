@@ -56,12 +56,26 @@ public class JsonHttpCustomerClientIntegrationTest {
     }
 
     @Test
-    public void shouldFindClient() {
+    public void shouldFindClientByEmail() {
         // Given
         String email = "jakub@dzon.pl";
 
         // When
         List<Customer> results = customerClient.find("email", email);
+
+        System.out.println(results);
+
+        // Then
+        assertThat(results, notNullValue());
+    }
+
+    @Test
+    public void shouldFindClientByNip() {
+        // Given
+        String nip = "5492164393";
+
+        // When
+        List<Customer> results = customerClient.find("nip", nip);
 
         System.out.println(results);
 

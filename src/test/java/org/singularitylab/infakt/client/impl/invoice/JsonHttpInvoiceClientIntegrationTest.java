@@ -11,14 +11,20 @@ import org.junit.Test;
 import org.singularitylab.infakt.client.InvoiceClient;
 import org.singularitylab.infakt.client.impl.InfaktAuthInterceptor;
 import org.singularitylab.infakt.client.model.Invoice;
+import org.singularitylab.infakt.client.model.InvoiceKind;
+import org.singularitylab.infakt.client.model.PaymentMethod;
+import org.singularitylab.infakt.client.model.SaleType;
+import org.singularitylab.infakt.client.model.Service;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
+import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
@@ -29,11 +35,13 @@ public class JsonHttpInvoiceClientIntegrationTest {
 
     private InvoiceClient invoiceClient;
 
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+
     @Before
     public void setUp() throws Exception {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setInterceptors(
-                Collections.singletonList(new InfaktAuthInterceptor("XXX")));
+                singletonList(new InfaktAuthInterceptor("XXX")));
         List<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
         MappingJackson2HttpMessageConverter jsonMessageConverter = new MappingJackson2HttpMessageConverter();
 
@@ -44,6 +52,7 @@ public class JsonHttpInvoiceClientIntegrationTest {
                 .configure(JsonGenerator.Feature.QUOTE_FIELD_NAMES, true)
                 .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
                 .configure(SerializationFeature.INDENT_OUTPUT, true)
+                .configure(SerializationFeature.WRAP_ROOT_VALUE, true)
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true)
                 .setSerializationInclusion(JsonInclude.Include.NON_NULL);
@@ -68,14 +77,31 @@ public class JsonHttpInvoiceClientIntegrationTest {
     @Test
     public void shouldCreateInvoice() {
         //Given
-        Invoice invoice = new Invoice();
-        invoice.setClientId(3791589);
+        Invoice invoice = Invoice.builder()
+                .withClientId(3791589)
+                .withClientCompanyName("Jakub Dzon Singularity Lab")
+                .withSaleDate(DATE_FORMAT.format(new Date()))
+                .withPaymentDate(DATE_FORMAT.format(new Date()))
+                .withKind(InvoiceKind.VAT)
+                .withPaymentMethod(PaymentMethod.TRANSFER)
+                .withSaleType(SaleType.SERVICE)
+                .withBankName("Idea Bank")
+                .withBankAccount("PL87195000012006045286540002")
+                .withSellerSignature("Jakub Dżon")
+                .withServices(
+                        singletonList(
+                                Service.builder()
+                                        .withName("Foo")
+                                        .withUnitNetPrice(100)
+                                        .withQuantity(1)
+                                        .withTaxSymbol("23")
+                                        .withUnit("szt.")
+                                        .build()
+                        )
+                ).build();
 
         // When
         Invoice created = invoiceClient.create(invoice);
-
-
-        System.out.println(created);
 
         // Then
         assertThat(created, notNullValue());

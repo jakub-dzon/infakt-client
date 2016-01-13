@@ -1,13 +1,175 @@
 package org.singularitylab.infakt.client.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
 
 import java.util.List;
 
 /**
  * @author Jakub Dzon
  */
+@JsonRootName("invoice")
 public class Invoice {
+
+    public static class Builder {
+
+        private String bankAccount;
+        private int id;
+        private String number;
+        private Currency currency;
+        private int paidPrice;
+        private String notes;
+        private InvoiceKind kind;
+        private PaymentMethod paymentMethod;
+        private String sellerSignature;
+        private String invoiceDate;
+        private String saleDate;
+        private String paymentDate;
+        private int netPrice;
+        private int taxPrice;
+        private int grossPrice;
+        private int clientId;
+        private String clientCompanyName;
+        private String bankName;
+        private List<Service> services;
+        private SaleType saleType;
+        private String swift;
+
+        private Builder() {
+        }
+
+        public Builder withBankAccount(String bankAccount) {
+            this.bankAccount = bankAccount;
+            return this;
+        }
+
+        public Builder withId(int id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder withNumber(String number) {
+            this.number = number;
+            return this;
+        }
+
+        public Builder withCurrency(Currency currency) {
+            this.currency = currency;
+            return this;
+        }
+
+        public Builder withPaidPrice(int paidPrice) {
+            this.paidPrice = paidPrice;
+            return this;
+        }
+
+        public Builder withNotes(String notes) {
+            this.notes = notes;
+            return this;
+        }
+
+        public Builder withKind(InvoiceKind kind) {
+            this.kind = kind;
+            return this;
+        }
+
+        public Builder withPaymentMethod(PaymentMethod paymentMethod) {
+            this.paymentMethod = paymentMethod;
+            return this;
+        }
+
+        public Builder withSellerSignature(String sellerSignature) {
+            this.sellerSignature = sellerSignature;
+            return this;
+        }
+
+        public Builder withInvoiceDate(String invoiceDate) {
+            this.invoiceDate = invoiceDate;
+            return this;
+        }
+
+        public Builder withSaleDate(String saleDate) {
+            this.saleDate = saleDate;
+            return this;
+        }
+
+        public Builder withPaymentDate(String paymentDate) {
+            this.paymentDate = paymentDate;
+            return this;
+        }
+
+        public Builder withNetPrice(int netPrice) {
+            this.netPrice = netPrice;
+            return this;
+        }
+
+        public Builder withTaxPrice(int taxPrice) {
+            this.taxPrice = taxPrice;
+            return this;
+        }
+
+        public Builder withGrossPrice(int grossPrice) {
+            this.grossPrice = grossPrice;
+            return this;
+        }
+
+        public Builder withClientId(int clientId) {
+            this.clientId = clientId;
+            return this;
+        }
+
+        public Builder withClientCompanyName(String clientCompanyName) {
+            this.clientCompanyName = clientCompanyName;
+            return this;
+        }
+
+        public Builder withBankName(String bankName) {
+            this.bankName = bankName;
+            return this;
+        }
+
+        public Builder withServices(List<Service> services) {
+            this.services = services;
+            return this;
+        }
+
+        public Builder withSaleType(SaleType saleType) {
+            this.saleType = saleType;
+            return this;
+        }
+
+        public Builder withSwift(String swift) {
+            this.swift = swift;
+            return this;
+        }
+
+        public Invoice build() {
+            Invoice invoice = new Invoice();
+            invoice.setBankAccount(bankAccount);
+            invoice.setId(id);
+            invoice.setNumber(number);
+            invoice.setCurrency(currency);
+            invoice.setPaidPrice(paidPrice);
+            invoice.setNotes(notes);
+            invoice.setKind(kind);
+            invoice.setPaymentMethod(paymentMethod);
+            invoice.setSellerSignature(sellerSignature);
+            invoice.setInvoiceDate(invoiceDate);
+            invoice.setSaleDate(saleDate);
+            invoice.setPaymentDate(paymentDate);
+            invoice.setNetPrice(netPrice);
+            invoice.setTaxPrice(taxPrice);
+            invoice.setGrossPrice(grossPrice);
+            invoice.setClientId(clientId);
+            invoice.setClientCompanyName(clientCompanyName);
+            invoice.setBankName(bankName);
+            invoice.setServices(services);
+            invoice.setSaleType(saleType);
+            invoice.setSwift(swift);
+            return invoice;
+        }
+    }
+
     private int id;
 
     private String number;
@@ -22,7 +184,7 @@ public class Invoice {
     private InvoiceKind kind;
 
     @JsonProperty("payment_method")
-    private String paymentMethod;
+    private PaymentMethod paymentMethod;
 
     @JsonProperty("seller_signature")
     private String sellerSignature;
@@ -48,12 +210,16 @@ public class Invoice {
     @JsonProperty("client_id")
     private int clientId;
 
+    @JsonProperty("client_company_name")
+    private String clientCompanyName;
+
     @JsonProperty("bank_name")
     private String bankName;
 
     @JsonProperty("bank_account")
     private String bankAccount;
 
+    @JsonProperty("services")
     private List<Service> services;
 
     @JsonProperty("sale_type")
@@ -109,11 +275,11 @@ public class Invoice {
         this.kind = kind;
     }
 
-    public String getPaymentMethod() {
+    public PaymentMethod getPaymentMethod() {
         return paymentMethod;
     }
 
-    public void setPaymentMethod(String paymentMethod) {
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
 
@@ -221,6 +387,14 @@ public class Invoice {
         this.swift = swift;
     }
 
+    public String getClientCompanyName() {
+        return clientCompanyName;
+    }
+
+    public void setClientCompanyName(String clientCompanyName) {
+        this.clientCompanyName = clientCompanyName;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Invoice{");
@@ -239,6 +413,7 @@ public class Invoice {
         sb.append(", taxPrice=").append(taxPrice);
         sb.append(", grossPrice=").append(grossPrice);
         sb.append(", clientId=").append(clientId);
+        sb.append(", clientCompanyName=").append(clientCompanyName);
         sb.append(", bankName='").append(bankName).append('\'');
         sb.append(", bankAccount='").append(bankAccount).append('\'');
         sb.append(", services=").append(services);
@@ -246,5 +421,9 @@ public class Invoice {
         sb.append(", swift='").append(swift).append('\'');
         sb.append('}');
         return sb.toString();
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 }
