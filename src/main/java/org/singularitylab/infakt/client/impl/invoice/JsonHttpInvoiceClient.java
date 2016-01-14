@@ -3,6 +3,7 @@ package org.singularitylab.infakt.client.impl.invoice;
 import org.singularitylab.infakt.client.InvoiceClient;
 import org.singularitylab.infakt.client.model.Invoice;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -20,7 +21,8 @@ class JsonHttpInvoiceClient implements InvoiceClient {
     private final String baseUrl;
 
     @Autowired
-    public JsonHttpInvoiceClient(RestTemplate restTemplate, String baseUrl) {
+    public JsonHttpInvoiceClient(RestTemplate restTemplate,
+            @Value("${infakt.api.url}") String baseUrl) {
         this.restTemplate = restTemplate;
         this.baseUrl = baseUrl;
     }
