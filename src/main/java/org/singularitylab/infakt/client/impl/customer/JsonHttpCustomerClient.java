@@ -18,19 +18,20 @@ class JsonHttpCustomerClient implements CustomerClient {
 
     private final RestTemplate restTemplate;
 
-    private final String baseUrl;
+    private String url;
 
     @Autowired
     public JsonHttpCustomerClient(RestTemplate restTemplate,
             @Value("${infakt.api.url}") String baseUrl) {
         this.restTemplate = restTemplate;
-        this.baseUrl = baseUrl;
+        url = baseUrl + "/clients";
     }
 
     @Override
     public List<Customer> find(String property, String value) {
+
         ResponseEntity<InfaktCustomerResponse> responseEntity = restTemplate
-                .getForEntity(baseUrl + "/clients.json?q[{property}_eq]={value}", InfaktCustomerResponse.class,
+                .getForEntity(url + ".json?q[{property}_eq]={value}", InfaktCustomerResponse.class,
                         property, value);
         return responseEntity.getBody().getEntities();
     }
@@ -38,7 +39,12 @@ class JsonHttpCustomerClient implements CustomerClient {
     @Override
     public Customer create(Customer customer) {
         ResponseEntity<Customer> result =
-                restTemplate.postForEntity(baseUrl + "/customers.json", customer, Customer.class);
+                restTemplate.postForEntity(url + ".json", customer, Customer.class);
         return result.getBody();
+    }
+
+    @Override
+    public void update(Customer customer) {
+        restTemplate.put(url + "/{id}.json", customer, customer.getId());
     }
 }

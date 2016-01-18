@@ -2,8 +2,10 @@ package org.singularitylab.infakt.client.impl.invoice;
 
 import org.singularitylab.infakt.client.InvoiceClient;
 import org.singularitylab.infakt.client.model.Invoice;
+import org.singularitylab.infakt.client.model.InvoiceLanguage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -38,7 +40,18 @@ class JsonHttpInvoiceClient implements InvoiceClient {
     public Invoice create(Invoice invoice) {
         ResponseEntity<Invoice> result = restTemplate.postForEntity(baseUrl + "/invoices.json", invoice, Invoice
                 .class);
-
         return result.getBody();
+    }
+
+    @Override
+    public byte[] print(Invoice invoice, InvoiceLanguage language) {
+        String url = baseUrl + "/invoices/{id}/pdf.json?document_type=regular&locale={locale}";
+        ResponseEntity<byte[]> responseEntity = restTemplate.getForEntity(url, byte[].class, invoice.getId(), language.getCode());
+        HttpStatus statusCode = responseEntity.getStatusCode();
+        if (statusCode == HttpStatus.OK) {
+            return responseEntity.getBody();
+        } else {
+            throw new IllegalStateException("Got " + statusCode);
+        }
     }
 }

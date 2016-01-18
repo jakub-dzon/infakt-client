@@ -12,13 +12,17 @@ import org.singularitylab.infakt.client.InvoiceClient;
 import org.singularitylab.infakt.client.impl.InfaktAuthInterceptor;
 import org.singularitylab.infakt.client.model.Invoice;
 import org.singularitylab.infakt.client.model.InvoiceKind;
+import org.singularitylab.infakt.client.model.InvoiceLanguage;
 import org.singularitylab.infakt.client.model.PaymentMethod;
 import org.singularitylab.infakt.client.model.SaleType;
 import org.singularitylab.infakt.client.model.Service;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -59,6 +63,7 @@ public class JsonHttpInvoiceClientIntegrationTest {
 
         jsonMessageConverter.setObjectMapper(objectMapper);
         messageConverters.add(jsonMessageConverter);
+        messageConverters.add(new ByteArrayHttpMessageConverter());
         restTemplate.setMessageConverters(messageConverters);
         invoiceClient = new JsonHttpInvoiceClient(restTemplate, "https://api.infakt.pl/v3");
     }
@@ -105,5 +110,18 @@ public class JsonHttpInvoiceClientIntegrationTest {
 
         // Then
         assertThat(created, notNullValue());
+    }
+
+    @Test
+    public void shouldPrint() throws IOException {
+        //Given
+
+        // When
+        byte[] invoice = invoiceClient.print(Invoice.builder().withId(11038792).build(), InvoiceLanguage.BOTH);
+
+        // Then
+        FileOutputStream fileOutputStream = new FileOutputStream("/tmp/x.pdf");
+        fileOutputStream.write(invoice);
+        fileOutputStream.close();
     }
 }

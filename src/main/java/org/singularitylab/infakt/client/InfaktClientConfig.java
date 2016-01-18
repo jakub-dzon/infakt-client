@@ -9,9 +9,13 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import org.singularitylab.infakt.client.impl.InfaktAuthInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.util.Collections.singletonList;
 
@@ -20,11 +24,18 @@ import static java.util.Collections.singletonList;
  */
 @ComponentScan("org.singularitylab.infakt.client.impl")
 public class InfaktClientConfig {
+
     @Bean
     public HttpMessageConverter<?> jackson2HttpMessageConverter() {
-        MappingJackson2HttpMessageConverter mappingJacksonHttpMessageConverter = new MappingJackson2HttpMessageConverter();
+        MappingJackson2HttpMessageConverter mappingJacksonHttpMessageConverter =
+                new MappingJackson2HttpMessageConverter();
         mappingJacksonHttpMessageConverter.setObjectMapper(objectMapper());
         return mappingJacksonHttpMessageConverter;
+    }
+
+    @Bean
+    public HttpMessageConverter<?> byteArrayHttpMessageConverter() {
+        return new ByteArrayHttpMessageConverter();
     }
 
     @Bean
@@ -48,7 +59,10 @@ public class InfaktClientConfig {
     public RestTemplate restTemplate(InfaktAuthInterceptor infaktAuthInterceptor) {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setInterceptors(singletonList(infaktAuthInterceptor));
-        restTemplate.setMessageConverters(singletonList(jackson2HttpMessageConverter()));
+        List<HttpMessageConverter<?>> converters = new ArrayList<>();
+        converters.add(jackson2HttpMessageConverter());
+        converters.add(byteArrayHttpMessageConverter());
+        restTemplate.setMessageConverters(converters);
         return restTemplate;
     }
 }
